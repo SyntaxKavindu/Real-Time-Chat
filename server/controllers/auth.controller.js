@@ -5,7 +5,7 @@ import User from "../models/user.model.js";
 
 // JWT Token
 import generateAuthToken from "../utilities/generateAuthToken.js";
-import { sendVerificationEmail } from "../mail/auth.mail.js";
+import { sendVerificationEmail, sendWelcomeEmail } from "../mail/auth.mail.js";
 
 // Signup route
 export const signup = async (req, res) => {
@@ -168,6 +168,9 @@ export const verifyEmail = async (req, res) => {
 
         // Save the updated user to the database
         await user.save();
+
+        // Send Welcome email
+        await sendWelcomeEmail(user.email, user.fullname);
 
         // Send success message
         res.json({ success: true, message: "Email verified successfully" });
