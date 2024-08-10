@@ -44,7 +44,7 @@ export const signup = async (req, res) => {
             password: hashedPassword,
             profileImage: `https://avatar.iran.liara.run/username?username=${fullname}`,
             verificationToken: verificationToken,
-            verificationTokenExpiration: Date.now() + (24 * 60 * 60 * 1000)
+            verificationTokenExpiration: Date.now() + (24 * 60 * 60 * 1000) // 1 Day
         });
 
         // check new user create success
@@ -145,8 +145,11 @@ export const logout = async (req, res) => {
 // Verify email route
 export const verifyEmail = async (req, res) => {
     try {
-        // Get verification token from request params
-        const { token } = req.params;
+        // Get verification token from request body
+        const { token } = req.body;
+
+        // get the user Id from request
+        const userId = req.user._id;
 
         // Check verification token is provided
         if (!token) {
@@ -154,7 +157,7 @@ export const verifyEmail = async (req, res) => {
         }
 
         // Find user by verification token
-        const user = await User.findOne({ verificationToken: token, verificationTokenExpiration: { $gt: Date.now() } });
+        const user = await User.findOne({ _id: userId, verificationToken: token, verified: false, verificationTokenExpiration: { $gt: Date.now() } });
 
         // If user not found, return error message
         if (!user) {
@@ -177,6 +180,36 @@ export const verifyEmail = async (req, res) => {
 
     } catch (err) {
         console.error("Error verifying user email:", err.message);
+        res.status(500).json({ success: false, message: "Internal Server error" });
+    }
+};
+
+// Resend verification token
+export const resendVerificationToken = async (req, res) => {
+    try {
+        res.status(200).json({ success: false, message: "Under Maintenance" });
+    } catch (error) {
+        console.error("Error resending verification token:", error.message);
+        res.status(500).json({ success: false, message: "Internal Server error" });
+    }
+};
+
+// Forgot password route
+export const forgotPassword = (req, res) => {
+    try {
+
+    } catch (error) {
+        console.error("Error forgot password:", error.message);
+        res.status(500).json({ success: false, message: "Internal Server error" });
+    }
+};
+
+// Reset password route
+export const resetPassword = (req, res) => {
+    try {
+
+    } catch (error) {
+        console.error("Error reset password:", error.message);
         res.status(500).json({ success: false, message: "Internal Server error" });
     }
 };

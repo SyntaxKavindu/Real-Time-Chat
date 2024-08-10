@@ -1,6 +1,9 @@
 import express from "express";
 import { login, logout, signup, verifyEmail } from "../controllers/auth.controller.js";
 
+// Middleware
+import authMiddleware from "../middlewares/auth.middleware.js";
+
 const router = express.Router();
 
 // Signup route
@@ -13,6 +16,6 @@ router.post("/signin", login);
 router.post("/signout", logout);
 
 // Verify route
-router.post("/verify-email", verifyEmail);
+router.post("/verify-email", authMiddleware, verifyEmail);
 
 export default router;
