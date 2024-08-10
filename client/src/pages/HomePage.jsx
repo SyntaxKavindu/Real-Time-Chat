@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { UserPlus } from "lucide-react";
 import SideBar from '../components/sidebar/SideBar';
@@ -11,11 +11,6 @@ const HomePage = () => {
 
   const [toggle, setToggle] = useState(true);
   const [toggleAddContact, setToggleAddContact] = useState(false);
-  const lastMessageRef = useRef();
-
-  useEffect(() => {
-    lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, []);
 
   const toggleConversation = () => {
     setToggle(!toggle);
