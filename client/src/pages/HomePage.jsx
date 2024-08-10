@@ -15,6 +15,10 @@ const HomePage = () => {
     lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
+  const toggleConversation = () => {
+    setToggle(!toggle);
+  };
+
   return (
     <motion.div
       className='min-w-[28rem] max-w-screen-2xl w-full min-h-screen flex flex-row bg-neutral-900 bg-opacity-50 backdrop-blur-xl shadow-2xl'
@@ -31,7 +35,7 @@ const HomePage = () => {
       }}
     >
       {/* Side Bar */}
-      <SideBar />
+      <SideBar toggleConversation={toggleConversation} />
 
       {/* Second and Thread Section */}
       <div className='min-h-full max-h-screen flex flex-row flex-1 relative'>
