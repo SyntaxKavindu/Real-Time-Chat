@@ -10,7 +10,7 @@ import "dotenv/config";
 import connectDatabase from "./utilities/connectDatabase.js";
 
 // Routes
-import { signupRoute } from "./routes/auth.routes.js";
+import authRoutes from "./routes/auth.routes.js";
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -20,7 +20,7 @@ app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 const port = process.env.PORT || 5000;
 
 // Auth Routes
-app.use("/api/auth", signupRoute);
+app.use("/api/auth", authRoutes);
 
 app.listen(port, () => {
     connectDatabase();
