@@ -15,7 +15,10 @@ router.post("/signin", login);
 // Logout route
 router.post("/signout", logout);
 
-// Verify route
+// Verify Auth route
+router.get("/verify-auth", verifyAuth);
+
+// Verify Email route
 router.post("/verify-email", authMiddleware, verifyEmail);
 
 export default router;

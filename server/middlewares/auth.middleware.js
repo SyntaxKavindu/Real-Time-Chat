@@ -20,7 +20,7 @@ const authMiddleware = async (req, res, next) => {
             }
 
             // if token is valid then get user information
-            const user = await User.findById(data._id);
+            const user = await User.findOne({ _id: data._id }, { password: -1 });
 
             // if user not found then return error
             if (!user) {

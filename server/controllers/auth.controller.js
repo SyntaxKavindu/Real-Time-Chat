@@ -62,7 +62,7 @@ export const signup = async (req, res) => {
         generateAuthToken(user._id, res);
 
         // send success message
-        res.json({
+        res.status(201).json({
             success: true,
             message: "User registered successfully. Please check your email for verification.",
             user: {
@@ -113,7 +113,7 @@ export const login = async (req, res) => {
         generateAuthToken(user._id, res);
 
         // Send user data
-        res.json({
+        res.status(200).json({
             success: true,
             message: "User logged in successfully",
             user: {
@@ -123,6 +123,52 @@ export const login = async (req, res) => {
 
     } catch (error) {
         console.error("Error logging in user:", error.message);
+        res.status(500).json({ success: false, message: "Internal Server error" });
+    }
+};
+
+// Verify auth route
+export const verifyAuth = async (req, res) => {
+    try {
+        // Get Token from request
+        const token = req.cookies["token"];
+
+        // check if token is provided
+        if (!token) {
+            return res.status(200).json({ success: false, message: "Unauthorized - No token provided" });
+        }
+
+        // Verify the token
+        jwt.verify(token, process.env.JWT_SECRET, async (err, data) => {
+            // if token is invalid then return error
+            if (err) {
+                return res.status(200).clearCookie("token").json({ success: false, message: "Unauthorized - Invalid token" });
+            }
+
+            // if token is valid then get user information
+            const user = await User.findOne({ _id: data._id }, { password: -1 });
+
+            // Check user valid
+            if (!user) {
+                return res.status(200).json({ success: false, message: "Unauthorized - User not found" });
+            }
+
+            // Update user last login time
+            user.lastLogin = Date.now();
+
+            // Save the updated user to the database
+            await user.save();
+
+            // Send user details
+            res.status(200).json({
+                success: true,
+                message: "User authenticated successfully",
+                user,
+            });
+        });
+
+    } catch (error) {
+        console.error("Error verifying auth:", error.message);
         res.status(500).json({ success: false, message: "Internal Server error" });
     }
 };
