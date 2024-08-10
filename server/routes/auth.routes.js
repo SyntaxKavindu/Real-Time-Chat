@@ -1,5 +1,5 @@
 import express from "express";
-import { login, logout, signup, verifyEmail } from "../controllers/auth.controller.js";
+import { login, logout, signup, verifyAuth, verifyEmail } from "../controllers/auth.controller.js";
 
 // Middleware
 import authMiddleware from "../middlewares/auth.middleware.js";
