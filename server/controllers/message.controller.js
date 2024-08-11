@@ -52,6 +52,7 @@ export const createMessage = async (req, res) => {
         await message.save();
 
         // Update Conversation
+        conversation.lastmessage.sender = senderId;
         conversation.lastmessage.text = text;
 
         // Save the updated conversation to the database
@@ -91,7 +92,9 @@ export const getMessages = async (req, res) => {
         }
 
         // Find all Messages in the Conversation
-        const messages = await Message.find({ conversation: conversation._id }).sort({ createdAt: -1 });
+        const messages = await Message.find({ conversation: conversation._id }).sort({ createdAt: -1 }).populate("sender", [
+            "_id", "fullname", "email", "profileImage", "lastLogin", "role"
+        ]);
 
         // Send the messages in the response with status code 200
         res.status(200).json({ success: true, messages });

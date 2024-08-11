@@ -8,9 +8,9 @@ const conversationSchema = new mongoose.Schema({
         required: true,
     },
     lastmessage: {
-        seen: {
-            type: Boolean,
-            default: false
+        sender: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
         },
         text: {
             type: String,
