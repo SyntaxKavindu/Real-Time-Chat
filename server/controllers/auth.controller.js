@@ -204,7 +204,7 @@ export const verifyEmail = async (req, res) => {
         }
 
         // Find user by verification token
-        const user = await User.findOne({ _id: userId, verificationToken: token, verified: false, verificationTokenExpiration: { $gt: Date.now() } },{password: 0});
+        const user = await User.findOne({ _id: userId, verificationToken: token, verified: false, verificationTokenExpiration: { $gt: Date.now() } }, { password: 0 });
 
         // If user not found, return error message
         if (!user) {
@@ -223,8 +223,8 @@ export const verifyEmail = async (req, res) => {
         await sendWelcomeEmail(user.email, user.fullname);
 
         // Send success message
-        res.json({ 
-            success: true, 
+        res.json({
+            success: true,
             message: "Email verified successfully",
             user
         });

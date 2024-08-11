@@ -1,8 +1,17 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { LogOut } from 'lucide-react';
+import { Loader, LogOut } from 'lucide-react';
+import useLogOut from '../../hooks/useLogOut';
 
 const LogOutButton = () => {
+
+    const { logOut, loading } = useLogOut();
+
+    const handleLogOut = () => {
+        if (loading) return;
+        logOut();
+    }
+
     return (
         <motion.div
             initial={{
@@ -18,8 +27,9 @@ const LogOutButton = () => {
                 ease: "linear",
                 delay: 0.2
             }}
+            onClick={handleLogOut}
         >
-            <LogOut className='hover:scale-110 active:scale-90 cursor-pointer ' />
+            {loading ? (<Loader className='w-6 h-6 animate-spin  mx-auto' />) : (<LogOut className='hover:scale-110 active:scale-90 cursor-pointer' />)}
         </motion.div>
     )
 };
