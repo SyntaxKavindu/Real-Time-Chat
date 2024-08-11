@@ -9,6 +9,8 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import LoadingSpinner from "./components/LoadingSpinner";
 import { useAuthContext } from "./contexts/AuthContext";
+import { ConversationContextProvider } from "./contexts/ConversationsContext";
+import { MessageContextProvider } from "./contexts/MessageContext";
 
 function App() {
 
@@ -31,7 +33,11 @@ function App() {
 
         <Route path="/" element={
           <ProtectRoute>
-            <HomePage />
+            <ConversationContextProvider>
+              <MessageContextProvider>
+                <HomePage />
+              </MessageContextProvider>
+            </ConversationContextProvider>
           </ProtectRoute>
         }
         />

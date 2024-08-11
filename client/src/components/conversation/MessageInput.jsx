@@ -1,24 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import useSendMessages from '../../hooks/useSendMessage';
+import toast from 'react-hot-toast';
 
 const MessageInput = () => {
+
+    const [message, setMessage] = useState('');
+    const { sendMessage, loading } = useSendMessages();
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!message) {
+            toast.error("Message cannot be empty.");
+            return;
+        }
+        sendMessage({message});
+        setMessage('');
+    };
+
     return (
         <motion.div
             initial={{
                 opacity: "0%",
-                y: "-50%"
             }}
             animate={{
                 opacity: ["0%", "100%"],
-                y: 0
             }}
             transition={{
-                duration: 0.9,
+                duration: 0.5,
                 ease: "linear",
                 delay: 0.2
             }}
         >
-            <form>
+            <form onSubmit={handleSubmit}>
                 <div className="flex items-center px-3 py-4 bg-neutral-900 bg-opacity-50">
                     <button type="button" className="inline-flex justify-center p-2 text-gray-500 rounded-lg cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600">
                         <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 18">
@@ -34,7 +48,7 @@ const MessageInput = () => {
                         </svg>
                         <span className="sr-only">Add emoji</span>
                     </button>
-                    <textarea id="chat" rows="1" className="resize-none block mx-4 p-2.5 w-full text-sm bg-gray-800 bg-opacity-50 rounded-lg border border-gray-700 focus:border-green-500 focus:ring-1 
+                    <textarea id="chat" rows="1" value={message} onChange={(e) => { setMessage(e.target.value) }} className="resize-none block mx-4 p-2.5 w-full text-sm bg-gray-800 bg-opacity-50 rounded-lg border border-gray-700 focus:border-green-500 focus:ring-1 
             focus:ring-green-500 text-white placeholder-gray-400 transition duration-200 outline-none" placeholder="Your message..."></textarea>
                     <button type="submit" className="inline-flex justify-center p-2 text-blue-600 rounded-full cursor-pointer hover:bg-blue-100 dark:text-blue-500 dark:hover:bg-gray-600">
                         <svg className="w-5 h-5 rotate-90 rtl:-rotate-90" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">

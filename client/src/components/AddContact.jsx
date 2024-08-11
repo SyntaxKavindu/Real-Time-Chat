@@ -1,11 +1,24 @@
 import { Loader, Mail, X } from 'lucide-react';
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Input from './Input';
+import useCreateConversation from '../hooks/useCreateConversation';
+import toast from 'react-hot-toast';
 
 const AddContact = ({ toggle }) => {
 
-    const loading = true;
+    const [email, setEmail] = useState('');
+    const { createConversation, loading } = useCreateConversation();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!email) {
+            toast.error('Please enter an email address');
+            return;
+        }
+        await createConversation({email},toggle);
+        setEmail('');
+    };
 
     return (
         <motion.div
@@ -41,18 +54,16 @@ const AddContact = ({ toggle }) => {
                     </h2>
                 </div>
                 <div className='p-8'>
-                    <form>
-                        <Input icon={Mail} type='email' placeholder='Email' />
-
+                    <form onSubmit={handleSubmit}>
+                        <Input icon={Mail} type='email' placeholder='Email' value={email} onChange={(e)=>(setEmail(e.target.value))} />
                         <motion.button
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             type='submit'
                             className='mt-5 w-full py-2.5 px-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-lg shadow-1g hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition duration-200'
                         >
-                            {loading ? (<Loader className='w-6 h-6 animate-spin  mx-auto' />) : ("Login")}
+                            {loading ? (<Loader className='w-6 h-6 animate-spin  mx-auto' />) : ("Add Contact")}
                         </motion.button>
-
                     </form>
                 </div>
                 <div className='px-8 py-4 bg-gray-900 bg-opacity-50 flex justify-center'>

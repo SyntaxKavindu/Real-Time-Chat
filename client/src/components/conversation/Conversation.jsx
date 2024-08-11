@@ -3,19 +3,28 @@ import { motion } from 'framer-motion';
 import NavBar from './NavBar';
 import MessageInput from './MessageInput';
 import Messages from './Messages';
+import { useMessagesContext } from '../../contexts/MessageContext';
 
 const Conversation = () => {
+
+    const { selectedConversation } = useMessagesContext();
+
     return (
         <div className='min-h-screen flex flex-col w-full md:flex-1 absolute md:relative'>
 
-            {/* Nav Bar */}
-            <NavBar />
+            {selectedConversation && (
+                <>
+                    {/* Nav Bar */}
+                    <NavBar />
 
-            {/* Messages */}
-            <Messages />
+                    {/* Messages */}
+                    <Messages />
 
-            {/* Message Input */}
-            <MessageInput />
+                    {/*  Message Input */}
+                    <MessageInput />
+                </>
+            )
+            }
 
         </div>
     )

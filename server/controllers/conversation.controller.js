@@ -42,6 +42,7 @@ export const createConversation = async (req, res) => {
             participants: [userId, user._id]
         });
 
+
         // Check if new conversation is created successfully
         if (!conversation) {
             return res.status(500).json({ success: false, message: "Failed to create conversation" });
@@ -50,8 +51,20 @@ export const createConversation = async (req, res) => {
         // Save the conversation to the database
         await conversation.save();
 
+        // populate conversation
+        await conversation.populate("participants", ["_id", "fullname", "email", "profileImage", "lastLogin", "role"]);
+
+        // Filter conversations and remove current user from conversations
+        const [filteredParticipants] = conversation.participants.filter((participant) => (participant._id !== userId));
+
         // Send the created conversation to the client
-        res.status(201).json({ success: true, conversation });
+        res.status(201).json({
+            success: true,
+            message: "Conversation created successfully",
+            conversation: {
+                ...conversation._doc, participants: filteredParticipants
+            }
+        });
 
     } catch (error) {
         console.error("Error creating conversation:", error.message);

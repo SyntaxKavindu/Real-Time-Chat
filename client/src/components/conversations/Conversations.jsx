@@ -1,14 +1,23 @@
 import React from 'react';
 import Conversation from './Conversation';
 import { motion } from 'framer-motion';
+import { useConversationContext } from '../../contexts/ConversationsContext';
 
 const Conversations = () => {
+
+    const { conversations, loading } = useConversationContext();
+
     return (
-        <div className='w-full flex-1 flex flex-col gap-3 overflow-y-scroll pl-2 pr-1'>
+        <div className='w-full flex-1 flex flex-col gap-3 overflow-y-scroll py-2 pl-2 pr-1'>
 
             {/* conversation */}
-            {/* <Conversation /> */}
-            <Skeleton />
+            {loading ? (
+                <Skeleton />
+            ) : (
+                conversations.map((conversation) => (
+                    <Conversation key={conversation._id} conversation={conversation} />
+                ))
+            )}
 
         </div>
     )
@@ -21,19 +30,6 @@ const Skeleton = () => {
         <motion.div
             className="max-w-full p-2 rounded-md flex flex-row justify-between bg-neutral-800 backdrop-blur bg-opacity-50 animate-pulse"
             whileTap={{ scale: 0.98 }}
-            initial={{
-                opacity: "0%",
-                y: "50%"
-            }}
-            animate={{
-                opacity: ["0%", "100%"],
-                y: 0
-            }}
-            transition={{
-                duration: 0.2,
-                ease: "linear",
-                delay: 0.1
-            }}
         >
             <div className="max-w-full overflow-x-hidden flex flex-row gap-4 items-center justify-between">
                 {/* Skeleton for Profile Image */}

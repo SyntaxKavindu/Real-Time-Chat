@@ -11,6 +11,7 @@ const conversationSchema = new mongoose.Schema({
         sender: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
+            default:null
         },
         text: {
             type: String,

@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import Message from './Message';
 import { motion } from 'framer-motion';
+import useGetMessages from '../../hooks/useGetMessages';
 
 const Messages = () => {
 
+    const { messages, loading } = useGetMessages();
     const lastMessageRef = useRef(null);
 
     useEffect(() => {
@@ -14,11 +16,15 @@ const Messages = () => {
         <div className='w-full flex-1 p-3 flex flex-col gap-4 overflow-y-scroll'>
 
             {/* Message */}
-            {[...Array(2)].map((_, i) => {
-                return <Skeleton key={i} />;
-            })}
-
-            {/* <Message /> */}
+            {loading ? (
+                [...Array(2)].map((_, i) => {
+                    return <Skeleton key={i} />
+                })
+            ) : (
+                messages.map((message) => (
+                    <Message key={message._id} message={message} />
+                ))
+            )}
 
             <div ref={lastMessageRef} ></div>
         </div>
@@ -33,13 +39,13 @@ const Skeleton = () => {
             <motion.div
                 className="flex items-start gap-2.5 animate-pulse" dir="ltl"
                 initial={{
-                    y: "50%"
+                    opacity: "0%"
                 }}
                 animate={{
-                    y: 0
+                    opacity: "100%"
                 }}
                 transition={{
-                    duration: 0.9,
+                    duration: 0.5,
                     ease: "linear",
                     delay: 0.2
                 }}
@@ -61,10 +67,10 @@ const Skeleton = () => {
             <motion.div
                 className="flex items-start gap-2.5 animate-pulse" dir="rtl"
                 initial={{
-                    y: "50%"
+                    opacity: "0%"
                 }}
                 animate={{
-                    y: 0
+                    opacity: "100%"
                 }}
                 transition={{
                     duration: 0.9,

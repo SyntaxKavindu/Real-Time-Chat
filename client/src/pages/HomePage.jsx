@@ -6,11 +6,13 @@ import SearchChats from '../components/SearchChats';
 import Conversations from '../components/conversations/Conversations';
 import Conversation from '../components/conversation/Conversation';
 import AddContact from '../components/AddContact';
+import { useAuthContext } from '../contexts/AuthContext';
 
 const HomePage = () => {
 
   const [toggle, setToggle] = useState(true);
   const [toggleAddContact, setToggleAddContact] = useState(false);
+  const { authUser } = useAuthContext();
 
   const toggleConversation = () => {
     setToggle(!toggle);
