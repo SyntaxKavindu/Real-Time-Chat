@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useMessagesContext } from "../contexts/MessageContext";
 import { useSocketContext } from "../contexts/SocketContext";
 import { useConversationContext } from "../contexts/ConversationsContext";
+import notificationSound from "../assets/sounds/notification.mp3";
 
 const useIncomingMessages = () => {
 
@@ -17,6 +18,9 @@ const useIncomingMessages = () => {
                 if (message.conversation === selectedConversation._id.toString()) {
                     setMessages((prevMessages) => [...prevMessages, message]);
                 }
+            } else {
+                const sound = new Audio(notificationSound);
+                sound.play();
             }
 
             setConversations((prevConversations) => {
