@@ -18,7 +18,9 @@ const useIncomingMessages = () => {
                 if (message.conversation === selectedConversation._id.toString()) {
                     setMessages((prevMessages) => [...prevMessages, message]);
                 }
-            } else {
+            }
+
+            if (!selectedConversation) {
                 const sound = new Audio(notificationSound);
                 sound.play();
             }
