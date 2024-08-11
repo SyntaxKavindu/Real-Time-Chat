@@ -22,7 +22,7 @@ import messageRoutes from "./routes/message.routes.js";
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(cors({ origin: "http://localhost:5000", credentials: true }));
+app.use(cors({ origin: "https://chat.kavinduchamath.com", credentials: true }));
 
 // Server Port
 const port = process.env.PORT || 5000;

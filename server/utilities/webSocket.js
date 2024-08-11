@@ -13,7 +13,7 @@ const server = createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:5000",
+        origin: "https://chat.kavinduchamath.com",
         credentials: true,
     },
 });
