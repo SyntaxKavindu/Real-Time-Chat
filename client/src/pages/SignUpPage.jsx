@@ -4,11 +4,25 @@ import { Link } from 'react-router-dom';
 import Input from '../components/Input';
 import { Loader, Lock, Mail, User } from "lucide-react";
 import PasswordStrengthMeter from '../components/PasswordStrengthMeter';
+import useSignUp from '../hooks/useSignUp';
+import toast from 'react-hot-toast';
 
 const SignUpPage = () => {
 
+  const [fullname, setFullName] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const loading = false;
+  const { signUp, loading } = useSignUp();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!fullname || !email || !password) {
+      toast.error('All fields are required');
+      return;
+    }
+    await signUp({ fullname, email, password });
+
+  };
 
   return (
     <motion.div
@@ -33,9 +47,9 @@ const SignUpPage = () => {
         </h1>
       </div>
       <div className='p-8'>
-        <form>
-          <Input icon={User} type='text' placeholder='Full Name' />
-          <Input icon={Mail} type='email' placeholder='Email' />
+        <form onSubmit={handleSubmit}>
+          <Input icon={User} type='text' placeholder='Full Name' value={fullname} onChange={(e) => { setFullName(e.target.value) }} />
+          <Input icon={Mail} type='email' placeholder='Email' value={email} onChange={(e) => { setEmail(e.target.value) }} />
           <Input icon={Lock} type='password' placeholder='Password' value={password} onChange={(e) => { setPassword(e.target.value) }} />
 
           <PasswordStrengthMeter password={password} />

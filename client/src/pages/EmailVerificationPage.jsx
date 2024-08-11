@@ -1,14 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Navigate, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import toast from "react-hot-toast";
+import useVerifyEmail from '../hooks/useEmailVerify';
 
 const EmailVerificationPage = () => {
 
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const inputRefs = useRef([]);
-  const navigate = useNavigate();
-  const loading = false;
+  const { verifyEmail, loading } = useVerifyEmail();
 
   const handleChange = (index, value) => {
     const newCode = [...code];
@@ -45,6 +43,7 @@ const EmailVerificationPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const verificationCode = code.join('');
+    await verifyEmail({ token: verificationCode });
   };
 
   useEffect(() => {

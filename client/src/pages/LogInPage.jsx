@@ -1,12 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from "framer-motion";
 import { Link } from 'react-router-dom';
 import Input from '../components/Input';
 import { Loader, Lock, Mail, User } from "lucide-react";
 
+import useLogin from "../hooks/useLogin";
+import toast from 'react-hot-toast';
+
 const LogInPage = () => {
 
-    const loading = false;
+    const [inputs, setInputs] = useState({
+        email: '',
+        password: ''
+    });
+    const { login, loading } = useLogin();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!inputs.email || !inputs.password) {
+            toast.error('Please enter email and password');
+            return;
+        }
+        await login(inputs);
+    }
 
     return (
         <motion.div
@@ -31,9 +47,9 @@ const LogInPage = () => {
                 </h1>
             </div>
             <div className='p-8'>
-                <form>
-                    <Input icon={Mail} type='email' placeholder='Email' />
-                    <Input icon={Lock} type='password' placeholder='Password' />
+                <form onSubmit={handleSubmit}>
+                    <Input icon={Mail} type='email' placeholder='Email' value={inputs.email} onChange={(e) => { setInputs((inputs) => ({ ...inputs, email: e.target.value })) }} />
+                    <Input icon={Lock} type='password' placeholder='Password' value={inputs.password} onChange={(e) => { setInputs((inputs) => ({ ...inputs, password: e.target.value })) }} />
 
                     <motion.button
                         whileHover={{ scale: 1.02 }}
@@ -43,7 +59,6 @@ const LogInPage = () => {
                     >
                         {loading ? (<Loader className='w-6 h-6 animate-spin  mx-auto' />) : ("Login")}
                     </motion.button>
-
                 </form>
             </div>
             <div className='px-8 py-4 bg-gray-900 bg-opacity-50 flex justify-center'>

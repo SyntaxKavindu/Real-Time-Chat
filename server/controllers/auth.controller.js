@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 // Models
 import User from "../models/user.model.js";
@@ -203,7 +204,7 @@ export const verifyEmail = async (req, res) => {
         }
 
         // Find user by verification token
-        const user = await User.findOne({ _id: userId, verificationToken: token, verified: false, verificationTokenExpiration: { $gt: Date.now() } });
+        const user = await User.findOne({ _id: userId, verificationToken: token, verified: false, verificationTokenExpiration: { $gt: Date.now() } },{password: 0});
 
         // If user not found, return error message
         if (!user) {
@@ -222,7 +223,11 @@ export const verifyEmail = async (req, res) => {
         await sendWelcomeEmail(user.email, user.fullname);
 
         // Send success message
-        res.json({ success: true, message: "Email verified successfully" });
+        res.json({ 
+            success: true, 
+            message: "Email verified successfully",
+            user
+        });
 
     } catch (err) {
         console.error("Error verifying user email:", err.message);

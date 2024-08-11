@@ -25,7 +25,12 @@ export const AuthContextProvider = ({ children }) => {
             }
         };
         verifyAuth();
-    }, [authUser]);
+
+        return () => {
+            // cleanup
+            setAuthUser(null);
+        };
+    }, []);
 
     return (
         <AuthContext.Provider value={{ authUser, setAuthUser, loading }}>

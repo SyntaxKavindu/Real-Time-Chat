@@ -1,5 +1,5 @@
 import { Toaster } from "react-hot-toast";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import FloatingShape from "./components/FloatingShape";
 import LogInPage from "./pages/LogInPage";
 import SignUpPage from "./pages/SignUpPage";
@@ -12,7 +12,7 @@ import { useAuthContext } from "./contexts/AuthContext";
 
 function App() {
 
-  const { authUser, setAuthUser, loading } = useAuthContext();
+  const { loading } = useAuthContext();
 
   if (loading) {
     return <LoadingSpinner />;
@@ -28,12 +28,48 @@ function App() {
       <FloatingShape color="bg-lime-600" size='w-32 h-32' top='40%' left='30%' delay={3} />
 
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LogInPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/verify-email" element={<EmailVerificationPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/reset-password" element={<ResetPasswordPage />} />
+
+        <Route path="/" element={
+          <ProtectRoute>
+            <HomePage />
+          </ProtectRoute>
+        }
+        />
+
+        <Route path="/login" element={
+          <RedirectAuthentication>
+            <LogInPage />
+          </RedirectAuthentication>
+        }
+        />
+
+        <Route path="/signup" element={
+          <RedirectAuthentication>
+            <SignUpPage />
+          </RedirectAuthentication>
+        }
+        />
+
+        <Route path="/verify-email" element={
+          <RedirectVerifiedUser>
+            <EmailVerificationPage />
+          </RedirectVerifiedUser>
+        }
+        />
+
+        <Route path="/forgot-password" element={
+          <RedirectAuthentication>
+            <ForgotPasswordPage />
+          </RedirectAuthentication>
+        }
+        />
+
+        <Route path="/reset-password" element={
+          <RedirectAuthentication>
+            <ResetPasswordPage />
+          </RedirectAuthentication>
+        }
+        />
       </Routes>
 
       <Toaster position='top-right' reverseOrder='true' />
@@ -42,3 +78,51 @@ function App() {
 };
 
 export default App;
+
+// Redirect authentication users
+const RedirectAuthentication = ({ children }) => {
+
+  const { authUser } = useAuthContext();
+
+  if (authUser && !authUser.verified) {
+    return (<Navigate to="/verify-email" replace />);
+  }
+  if (authUser && authUser.verified) {
+    return (<Navigate to="/" replace />);
+  }
+  if (!authUser) {
+    return (children);
+  }
+};
+
+// Redirect unauthenticated users to the login page
+const ProtectRoute = ({ children }) => {
+
+  const { authUser } = useAuthContext();
+
+  if (authUser && !authUser.verified) {
+    return (<Navigate to="/verify-email" replace />);
+  }
+  if (!authUser) {
+    return (<Navigate to="/login" replace />);
+  }
+  if (authUser && authUser.verified) {
+    return (children);
+  }
+};
+
+// Redirect verified users to the home page
+const RedirectVerifiedUser = ({ children }) => {
+
+  const { authUser } = useAuthContext();
+
+  if (!authUser) {
+    return (<Navigate to="/login" replace />);
+  }
+  if (authUser && authUser.verified) {
+    return (<Navigate to="/" replace />);
+  }
+  if (authUser && !authUser.verified) {
+    return (children);
+  }
+};
