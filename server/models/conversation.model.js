@@ -16,6 +16,10 @@ const conversationSchema = new mongoose.Schema({
         text: {
             type: String,
             default: "No Last Message",
+        },
+        seen:{
+            type: Boolean,
+            default: false,
         }
     }
 }, {

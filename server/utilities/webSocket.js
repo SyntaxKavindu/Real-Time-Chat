@@ -4,6 +4,8 @@ import { Server } from "socket.io";
 import { parse } from 'cookie';
 import jwt from "jsonwebtoken";
 import User from '../models/user.model.js';
+import Message from '../models/message.model.js';
+import Conversation from '../models/conversation.model.js';
 
 const app = express();
 
@@ -75,6 +77,39 @@ io.on("connection", (socket) => {
     // Broadcast the connected users list to all connected users
     io.emit("online-users", Object.keys(connectedUsers));
 
+    socket.on("mark-seen", async (data) => {
+        try {
+            // Update all messages in the conversation as seen
+            await Message.updateMany({ conversation: data.conversation, seen: false }, { $set: { seen: true } });
+
+            // receiver id from the conversation
+            const conversation = await Conversation.findById(data.conversation);
+
+            // update the seen flag
+            conversation.lastmessage.seen = true;
+
+            // save the updated conversation to the database
+            await conversation.save();
+
+            // Find all participants in the conversation
+            const participants = conversation.participants;
+
+            // Find receiver id
+            const receiverId = participants.find((participant) => (participant._id.toString() !== socket.user._id.toString()));
+
+            // find the receiver socket id
+            const receiverSocketId = getReceiverSocketId(receiverId);
+
+            // Send the updated message list to the receiver
+            if (receiverSocketId) {
+                io.to(receiverSocketId).emit("message-seen", { conversation: data.conversation });
+            }
+
+        } catch (error) {
+            console.error("Error in marking message as seen:", error.message);
+        }
+    });
+
     // Handle user disconnecting
     socket.on("disconnect", () => {
 
@@ -88,5 +123,9 @@ io.on("connection", (socket) => {
         console.log(`User disconnected : ${socket.id}`);
     });
 });
+
+export const getReceiverSocketId = (receiverId) => {
+    return connectedUsers[receiverId];
+};
 
 export { app, server, io };

@@ -2,15 +2,55 @@ import React, { useEffect, useRef } from 'react';
 import Message from './Message';
 import { motion } from 'framer-motion';
 import useGetMessages from '../../hooks/useGetMessages';
+import { useAuthContext } from '../../contexts/AuthContext';
+import { useSocketContext } from '../../contexts/SocketContext';
+import { useMessagesContext } from '../../contexts/MessageContext';
+import { useConversationContext } from '../../contexts/ConversationsContext';
 
 const Messages = () => {
-
+    const { socket } = useSocketContext();
+    const { setConversations } = useConversationContext();
+    const { setMessages, selectedConversation } = useMessagesContext();
     const { messages, loading } = useGetMessages();
     const lastMessageRef = useRef(null);
+    const { authUser } = useAuthContext();
+    const isLastMessage = messages[messages.length - 1]?.sender._id !== authUser._id;
 
     useEffect(() => {
         lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
     });
+
+    useEffect(() => {
+        console.log()
+        if (isLastMessage) {
+            socket.emit("mark-seen", { conversation: selectedConversation._id });
+        }
+
+        socket.on("message-seen", (data) => {
+            if (data.conversation === selectedConversation._id) {
+                setMessages((prevMessages) => {
+                    const updatedMessages = prevMessages.map((message) => {
+                        if (message.seen == false) {
+                            message.seen = true;
+                        }
+                        return message;
+                    });
+                    return updatedMessages;
+                });
+            }
+            setConversations((prevConversations) => {
+                const newConversations = prevConversations.map((conversation) => {
+                    if (conversation._id === data.conversation) {
+                        conversation.lastmessage.seen = true;
+                    }
+                    return conversation;
+                });
+                return newConversations;
+            });
+
+        });
+
+    }, [messages, socket]);
 
     return (
         <div className='w-full flex-1 p-3 flex flex-col gap-4 overflow-y-scroll'>

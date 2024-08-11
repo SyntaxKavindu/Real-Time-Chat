@@ -1,5 +1,6 @@
 import Conversation from "../models/conversation.model.js";
 import Message from "../models/message.model.js";
+import { getReceiverSocketId, io } from "../utilities/webSocket.js";
 
 // Create a new Message
 export const createMessage = async (req, res) => {
@@ -58,7 +59,19 @@ export const createMessage = async (req, res) => {
         // Save the updated conversation to the database
         await conversation.save();
 
+        // Populate the sender information for the message
         await message.populate("sender", ["_id", "fullname", "email", "profileImage", "lastLogin", "role"]);
+
+        // Get Receiver user id
+        const receiverId = conversation.participants.find((participant) => participant._id.toString() !== senderId.toString());
+
+        // Get Receiver Socket ID
+        const receiverSocketId = getReceiverSocketId(receiverId);
+
+        // if receiver online emit message for receiver socket id
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("new-message", message);
+        }
 
         // Send the created message in the response with status code 201
         res.status(201).json({ success: true, message });
