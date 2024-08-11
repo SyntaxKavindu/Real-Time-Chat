@@ -4,6 +4,9 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import "dotenv/config";
 
+// Initialize Server with WebSocket
+import { app, server } from "./utilities/webSocket.js";
+
 // Middlewares
 import authMiddleware from "./middlewares/auth.middleware.js";
 
@@ -15,7 +18,6 @@ import authRoutes from "./routes/auth.routes.js";
 import conversationRoutes from "./routes/conversation.routes.js";
 import messageRoutes from "./routes/message.routes.js";
 
-const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -31,7 +33,7 @@ app.use("/api/conversation", authMiddleware, conversationRoutes);
 // Message Routes
 app.use("/api/message", authMiddleware, messageRoutes);
 
-app.listen(port, () => {
+server.listen(port, () => {
     connectDatabase();
     console.log(`Server is running on port ${port}`);
 });

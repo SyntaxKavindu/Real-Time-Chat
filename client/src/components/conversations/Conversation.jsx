@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCheck } from 'lucide-react';
 import { useMessagesContext } from '../../contexts/MessageContext';
+import { useSocketContext } from '../../contexts/SocketContext';
 
 const Conversation = ({ conversation }) => {
 
+    const { onlineUsers } = useSocketContext();
     const { selectedConversation, setSelectedConversation } = useMessagesContext();
 
     const isSelected = conversation._id === selectedConversation?._id;
+    const isOnline = onlineUsers.includes(conversation.participants._id);
 
     return (
         <motion.div
@@ -41,7 +44,7 @@ const Conversation = ({ conversation }) => {
 
             {/* Seen Icon */}
             <div className='flex flex-col justify-between items-center ps-2'>
-                <div className='h-2 w-2 rounded-full bg-green-400 glow'></div>
+                {isOnline && (<div className='h-2 w-2 rounded-full bg-green-400 glow'></div>)}
                 <CheckCheck className='w-4 h-4' />
             </div>
         </motion.div>

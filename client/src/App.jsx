@@ -11,6 +11,7 @@ import LoadingSpinner from "./components/LoadingSpinner";
 import { useAuthContext } from "./contexts/AuthContext";
 import { ConversationContextProvider } from "./contexts/ConversationsContext";
 import { MessageContextProvider } from "./contexts/MessageContext";
+import { SocketContextProvider } from "./contexts/SocketContext";
 
 function App() {
 
@@ -35,7 +36,9 @@ function App() {
           <ProtectRoute>
             <ConversationContextProvider>
               <MessageContextProvider>
-                <HomePage />
+                <SocketContextProvider>
+                  <HomePage />
+                </SocketContextProvider>
               </MessageContextProvider>
             </ConversationContextProvider>
           </ProtectRoute>

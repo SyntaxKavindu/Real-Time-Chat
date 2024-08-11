@@ -55,7 +55,7 @@ export const createConversation = async (req, res) => {
         await conversation.populate("participants", ["_id", "fullname", "email", "profileImage", "lastLogin", "role"]);
 
         // Filter conversations and remove current user from conversations
-        const [filteredParticipants] = conversation.participants.filter((participant) => (participant._id !== userId));
+        const [filteredParticipants] = conversation.participants.filter((participant) => (participant._id.toString() !== userId.toString()));
 
         // Send the created conversation to the client
         res.status(201).json({
@@ -83,7 +83,7 @@ export const getConversations = async (req, res) => {
 
         // Filter conversations and remove current user from conversations
         const filteredConversations = conversations.map((conversation) => {
-            const [filteredParticipants] = conversation.participants.filter((participant) => (participant._id !== userId));
+            const [filteredParticipants] = conversation.participants.filter((participant) => (participant._id.toString() !== userId.toString()));
             return {
                 ...conversation._doc, participants: filteredParticipants
             };
