@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-    baseURL: "http://chat.kavinduchamath.com/api",
+    baseURL: "https://chat.kavinduchamath.com/api",
     headers: {
         "Content-Type": "application/json",
     },

@@ -13,7 +13,7 @@ export const SocketContextProvider = ({ children }) => {
     useEffect(() => {
         if (authUser) {
 
-            const socket = io("http://chat.kavinduchamath.com", {
+            const socket = io("https://chat.kavinduchamath.com", {
                 withCredentials: true,
                 secure: true,
             })
