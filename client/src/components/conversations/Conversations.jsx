@@ -2,10 +2,12 @@ import React from 'react';
 import Conversation from './Conversation';
 import { motion } from 'framer-motion';
 import { useConversationContext } from '../../contexts/ConversationsContext';
+import useNewConversations from '../../hooks/useNewConversations';
 
 const Conversations = () => {
 
     const { conversations, loading } = useConversationContext();
+    useNewConversations();
 
     return (
         <div className='w-full flex-1 flex flex-col gap-3 overflow-y-scroll py-2 pl-2 pr-1'>

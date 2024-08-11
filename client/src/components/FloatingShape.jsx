@@ -8,7 +8,6 @@ const FloatingShape = ({ color, size, top, left, delay }) => {
             style={{ left, top }}
             animate={{
                 x: ["0%", "100%", "0%"],
-                y: ["0%", "100%", "0%"],
                 rotate: [0, 360],
             }}
             transition={{

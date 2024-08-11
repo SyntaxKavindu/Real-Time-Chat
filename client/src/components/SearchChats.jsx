@@ -6,12 +6,10 @@ const SearchChats = () => {
     return (
         <motion.div
             initial={{
-                opacity: "0%",
-                y: "50%"
+                opacity: "0%"
             }}
             animate={{
-                opacity: ["0%", "100%"],
-                y: 0
+                opacity: ["0%", "100%"]
             }}
             transition={{
                 duration: 0.9,

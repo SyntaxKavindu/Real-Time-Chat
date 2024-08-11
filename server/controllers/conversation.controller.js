@@ -1,5 +1,6 @@
 import Conversation from "../models/conversation.model.js";
 import User from "../models/user.model.js";
+import { getReceiverSocketId, io } from "../utilities/webSocket.js";
 
 
 // Create Conversation
@@ -42,7 +43,6 @@ export const createConversation = async (req, res) => {
             participants: [userId, user._id]
         });
 
-
         // Check if new conversation is created successfully
         if (!conversation) {
             return res.status(500).json({ success: false, message: "Failed to create conversation" });
@@ -56,6 +56,19 @@ export const createConversation = async (req, res) => {
 
         // Filter conversations and remove current user from conversations
         const [filteredParticipants] = conversation.participants.filter((participant) => (participant._id.toString() !== userId.toString()));
+
+        // get other participant socket id
+        const participantSocketId = getReceiverSocketId(user._id);
+
+        // if participant online emit new conversation for participant socket id
+        if (participantSocketId) {
+            io.to(participantSocketId).emit("new-conversation", {
+                conversation: {
+                    ...conversation._doc, participants: filteredParticipants
+                }
+            });
+            console.log('sending new conversation');
+        }
 
         // Send the created conversation to the client
         res.status(201).json({
