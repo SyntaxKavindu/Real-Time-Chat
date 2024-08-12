@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 const generateAuthToken = (userID, res) => {
     try {
         // Create a JWT Token
-        const token = jwt.sign({ _id: userID }, process.env.JWT_SECRET, { expiresIn: "1h" });
+        const token = jwt.sign({ _id: userID }, process.env.JWT_SECRET, { expiresIn: "1d" });
 
         // check if the token created successfully
         if (!token) {
@@ -15,7 +15,7 @@ const generateAuthToken = (userID, res) => {
             httpOnly: true,
             secure: true,
             sameSite: "Strict",
-            maxAge: (1 * 60 * 60 * 1000) // 1 hour expiration time (3600000 milliseconds)
+            maxAge: (24 * 60 * 60 * 1000) // 24 hour expiration time (3600000 milliseconds)
         });
 
     } catch (error) {
